@@ -1,23 +1,26 @@
 <head>
-<style>
-body {
-    font-family: sans-serif;
-    font-size: 1.125rem;
-    display: flex;
-    flex-direction: column;
-    max-width: 50rem;
-    margin: 0 auto;
-    padding: 0 0.9375rem;   
-    background-color: #222;
-    color: #e6e6e6;
-    border-color: #e6e6e6;
-}
-    input[type="text"], input[type="date"] {
-        background-color: #333;
-        color: #e6e6e6;
-    }
-</style>
+    <style>
+        body {
+            font-family: sans-serif;
+            font-size: 1.125rem;
+            display: flex;
+            flex-direction: column;
+            max-width: 50rem;
+            margin: 0 auto;
+            padding: 0 0.9375rem;
+            background-color: #222;
+            color: #e6e6e6;
+            border-color: #e6e6e6;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            background-color: #333;
+            color: #e6e6e6;
+        }
+    </style>
 </head>
+
 <body>
     <p><b>Add new character</b><br>
         Name: <input type="text" id="name"><br>
@@ -72,7 +75,7 @@ body {
         const sInYear = 31556952;
         const sInMonth = 2628000;
         const sInDay = 86400;
-        let years = Math.floor(diffTime / 31556952);
+        let years = Math.floor(diffTime / sInYear);
         let months = Math.floor((diffTime % sInYear) / sInMonth);
         let days = Math.floor(((diffTime % sInYear) % sInMonth) / sInDay);
         return `${minus}${years} years, ${months} months and ${days} days`
