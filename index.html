@@ -63,14 +63,19 @@ body {
     }
 
     function calcAge(dob, date) {
-        let diffTime = (Math.abs(new Date(date) - new Date(dob))) / 1000
+        let diffTime = (new Date(date) - new Date(dob)) / 1000
+        let minus = "";
+        if (diffTime < 0) {
+            diffTime = Math.abs(diffTime);
+            minus = "-"
+        }
         const sInYear = 31556952;
         const sInMonth = 2628000;
         const sInDay = 86400;
         let years = Math.floor(diffTime / 31556952);
         let months = Math.floor((diffTime % sInYear) / sInMonth);
         let days = Math.floor(((diffTime % sInYear) % sInMonth) / sInDay);
-        return `${years} years, ${months} months and ${days} days`
+        return `${minus}${years} years, ${months} months and ${days} days`
     }
 
     function renderList() {
