@@ -1,0 +1,99 @@
+<head>
+<style>
+body {
+    font-family: sans-serif;
+    font-size: 1.125rem;
+    display: flex;
+    flex-direction: column;
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: 0 0.9375rem;   
+    background-color: #222;
+    color: #e6e6e6;
+    border-color: #e6e6e6;
+}
+    input[type="text"], input[type="date"] {
+        background-color: #333;
+        color: #e6e6e6;
+    }
+</style>
+</head>
+<body>
+    <p><b>Add new character</b><br>
+        Name: <input type="text" id="name"><br>
+        Date of Birth: <input type="date" id="dob" name="dob"><br>
+        <input type="button" onClick="addNewCharacter()" value="Add">
+    <p>Set date: <input type="date" id="date" name="date"></p>
+    </p>
+    <p>Filter by name: <input type="text" id="nameFilter"></p>
+    <p id="table">
+
+    </p>
+</body>
+<script>
+    let characterList = JSON.parse(window.localStorage.getItem('characterList')) || [{
+        name: "Jim Bobbington",
+        dob: "1995-01-19"
+    }];
+    let date = document.getElementById('date');
+    let dob = document.getElementById('dob');
+    let nameFilter = document.getElementById('nameFilter');
+    let name = document.getElementById('name');
+    let table = document.getElementById('table');
+
+    date.value = window.localStorage.getItem('date') || (new Date()).toISOString().substr(0, 10);
+    dob.value = (new Date()).toISOString().substr(0, 10);
+    nameFilter.addEventListener('input', renderList)
+    date.addEventListener('input', renderList);
+
+    function addNewCharacter() {
+        characterList.push({
+            name: name.value,
+            dob: dob.value
+        });
+        name.value = "";
+        renderList()
+        window.localStorage.setItem('characterList', JSON.stringify(characterList));
+    }
+
+    function deleteCharacter(name) {
+        characterList = characterList.filter(a => a.name != name);
+        renderList()
+        window.localStorage.setItem('characterList', JSON.stringify(characterList));
+    }
+
+    function calcAge(dob, date) {
+        let diffTime = (Math.abs(new Date(date) - new Date(dob))) / 1000
+        const sInYear = 31556952;
+        const sInMonth = 2628000;
+        const sInDay = 86400;
+        let years = Math.floor(diffTime / 31556952);
+        let months = Math.floor((diffTime % sInYear) / sInMonth);
+        let days = Math.floor(((diffTime % sInYear) % sInMonth) / sInDay);
+        return `${years} years, ${months} months and ${days} days`
+    }
+
+    function renderList() {
+        window.localStorage.setItem('date', date.value);
+        let filter = nameFilter.value.toLowerCase();
+        let currentDate = date.value;
+        let html = `<table border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>DoB</th>
+                    <th>Age at Date</th>
+                </tr></thead>`;
+        characterList.filter(character => character.name.toLowerCase().includes(filter)).forEach(character => {
+            html += `
+            <tr>
+                <td><span onClick='deleteCharacter("${character.name}")'>🗑️</span>${character.name}</td>
+                <td>${character.dob}</td>
+                <td>${calcAge(character.dob, currentDate)}</td>
+            </tr>`
+        })
+        html += "</table>"
+        table.innerHTML = html;
+    }
+    renderList()
+</script>
